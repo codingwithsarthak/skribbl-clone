@@ -12,16 +12,15 @@ function GameHeader({ game, drawerName, myWord }) {
     }
 
     const updateTimer = () => {
-      const remaining = Math.max(
-        0,
-        Math.ceil((game.roundEndsAt - Date.now()) / 1000)
+      setSecondsLeft(
+        Math.max(
+          0,
+          Math.ceil((game.roundEndsAt - Date.now()) / 1000)
+        )
       );
-
-      setSecondsLeft(remaining);
     };
 
     updateTimer();
-
     const interval = setInterval(updateTimer, 250);
 
     return () => clearInterval(interval);
@@ -29,54 +28,58 @@ function GameHeader({ game, drawerName, myWord }) {
 
   if (!game) return null;
 
+  const isDrawing = game.status === "drawing";
+  const status =
+    game.status === "choosing"
+      ? "WORD SELECTION"
+      : game.status === "round-ended"
+        ? "ROUND FINISHED"
+        : game.status === "finished"
+          ? "GAME FINISHED"
+          : `ROUND ${game.round} OF ${game.maxRounds}`;
+
+  const description =
+    game.status === "choosing"
+      ? `${drawerName || "The drawer"} is choosing a word.`
+      : game.status === "round-ended"
+        ? "Get ready for the next round!"
+        : game.status === "finished"
+          ? "The game is over!"
+          : `${drawerName || "The drawer"} is drawing.`;
+
   return (
-    <div className="game-status">
-      <span className="status-label">
-        {game.status === "choosing"
-          ? "WORD SELECTION"
-          : game.status === "round-ended"
-            ? "ROUND FINISHED"
-            : game.status === "finished"
-              ? "GAME FINISHED"
-              : "ROUND IN PROGRESS"}
-      </span>
+    <section className="game-status compact-game-status">
+      <div className="compact-status-row">
+        <div className="compact-round-info">
+          <span className="compact-status-label">{status}</span>
+          <strong className="compact-drawer-name">
+            {description}
+          </strong>
+        </div>
 
-      <h2>
-        {game.status === "choosing"
-          ? "Choose your word!"
-          : `Round ${game.round} of ${game.maxRounds}`}
-      </h2>
+        {isDrawing && (
+          <div className="round-timer compact-round-timer">
+            ⏱ {secondsLeft}s
+          </div>
+        )}
+      </div>
 
-      <p>
-        {game.status === "choosing"
-          ? `${drawerName || "The drawer"} is choosing a word.`
-          : game.status === "round-ended"
-            ? "Get ready for the next round!"
-            : game.status === "finished"
-              ? "The game is over!"
-              : `${drawerName || "The drawer"} is drawing.`}
-      </p>
-
-      {game.status === "drawing" && (
-        <div className="round-timer">
-          ⏱ Time left: <strong>{secondsLeft}s</strong>
+      {isDrawing && myWord && (
+        <div className="secret-word compact-secret-word">
+          <div className="compact-word-info">
+            <span>YOUR SECRET WORD</span>
+            <strong>{myWord}</strong>
+          </div>
+          <p>Draw so others can guess!</p>
         </div>
       )}
 
-      {game.status === "drawing" && myWord && (
-        <div className="secret-word">
-          <span>YOUR SECRET WORD</span>
-          <strong>{myWord}</strong>
-          <p>Draw this word so others can guess it!</p>
-        </div>
-      )}
-
-      {game.status === "drawing" && !myWord && (
+      {isDrawing && !myWord && (
         <div className="word-hint">
           Word: {"_ ".repeat(game.wordLength).trim()}
         </div>
       )}
-    </div>
+    </section>
   );
 }
 

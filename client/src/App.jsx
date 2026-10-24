@@ -463,25 +463,7 @@ function App() {
               </div>
             ) : (
               <>
-                <div className="game-round-banner">
-                  <div>
-                    <span className="status-label">
-                      {game.status === "choosing"
-                        ? "WORD SELECTION"
-                        : "ROUND IN PROGRESS"}
-                    </span>
-
-                    <h2>
-                      {game.status === "choosing"
-                        ? "Choose your word!"
-                        : `${drawer?.name || "Player"} is drawing`}
-                    </h2>
-                  </div>
-
-                  <div className="round-indicator">
-                    Round {game.round} of {game.maxRounds}
-                  </div>
-                </div>
+                
 
                 <GameHeader
                   game={game}
