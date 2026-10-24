@@ -26,7 +26,22 @@ const io = new Server(httpServer, {
 
 // Rooms and game state are stored in server memory.
 const rooms = new Map();
+const ALLOWED_AVATARS = new Set([
+    "fox",
+    "panda",
+    "cat",
+    "rabbit",
+    "bear",
+    "frog",
+    "tiger",
+    "koala"
+]);
 
+function getSafeAvatar(avatar) {
+    return typeof avatar === "string" && ALLOWED_AVATARS.has(avatar)
+        ? avatar
+        : "fox";
+}
 const WORDS = [
     "apple",
     "elephant",
@@ -129,7 +144,8 @@ function getPublicRoom(room) {
         players: room.players.map((player) => ({
             id: player.id,
             name: player.name,
-            score: player.score
+            score: player.score,
+            avatar: getSafeAvatar(player.avatar)
         })),
         game: room.game
             ? {
@@ -329,6 +345,7 @@ io.on("connection", (socket) => {
         const name = String(data?.name || "")
             .trim()
             .slice(0, 20);
+        const avatar = getSafeAvatar(data?.avatar);
 
         if (!name) {
             return callback?.({
@@ -348,7 +365,7 @@ io.on("connection", (socket) => {
             code,
             hostId: socket.id,
             players: [
-                { id: socket.id, name, score: 0 }
+                { id: socket.id, name, score: 0 , avatar}
             ],
             game: null
         };
@@ -365,6 +382,7 @@ io.on("connection", (socket) => {
         const name = String(data?.name || "")
             .trim()
             .slice(0, 20);
+        const avatar = getSafeAvatar(data?.avatar);
 
         const code = String(data?.code || "")
             .trim()
@@ -405,7 +423,9 @@ io.on("connection", (socket) => {
         room.players.push({
             id: socket.id,
             name,
-            score: 0
+            score: 0,
+            avatar
+            
         });
 
         socket.join(code);

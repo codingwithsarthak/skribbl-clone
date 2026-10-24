@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
+import AvatarPicker, { AVATARS } from "./components/AvatarPicker";
 
 import GameHeader from "./components/GameHeader";
 import WordSelection from "./components/WordSelection";
@@ -73,6 +74,9 @@ const socket = io(
   import.meta.env.VITE_SERVER_URL || "http://localhost:5000",
   { autoConnect: false }
 );
+function getAvatarDetails(avatarId) {
+  return AVATARS.find((avatar) => avatar.id === avatarId) || AVATARS[0];
+}
 
 function App() {
   const [connected, setConnected] = useState(false);
@@ -87,6 +91,7 @@ function App() {
   const previousRoomRef = useRef(null);
 
   const [roundDuration, setRoundDuration] = useState(60);
+  const [selectedAvatar, setSelectedAvatar] = useState("fox");
 
   useEffect(() => {
     const onConnect = () => setConnected(true);
@@ -187,50 +192,56 @@ function App() {
     };
   }, []);
   useEffect(() => {
-  const game = room?.game;
+    const game = room?.game;
 
-  if (
-    game?.status !== "drawing" ||
-    !game.roundEndsAt
-  ) {
-    return;
-  }
+    if (
+      game?.status !== "drawing" ||
+      !game.roundEndsAt
+    ) {
+      return;
+    }
 
-  const warningDelay = game.roundEndsAt - Date.now() - 10000;
+    const warningDelay = game.roundEndsAt - Date.now() - 10000;
 
-  const timeout = setTimeout(() => {
-    playSound("warning");
-  }, Math.max(0, warningDelay));
+    const timeout = setTimeout(() => {
+      playSound("warning");
+    }, Math.max(0, warningDelay));
 
-  return () => clearTimeout(timeout);
-}, [room?.game?.status, room?.game?.roundEndsAt]);
+    return () => clearTimeout(timeout);
+  }, [room?.game?.status, room?.game?.roundEndsAt]);
 
   function createRoom(event) {
     event?.preventDefault();
     setError("");
 
-    socket.emit("create-room", { name }, (result) => {
-      if (result?.error) {
-        setError(result.error);
-        return;
-      }
+    socket.emit(
+      "create-room",
+      { name, avatar: selectedAvatar },
+      (result) => {
+        if (result?.error) {
+          setError(result.error);
+          return;
+        }
 
-      setRoom(result.room);
-    });
+        setRoom(result.room);
+      });
   }
 
   function joinRoom(event) {
     event?.preventDefault();
     setError("");
 
-    socket.emit("join-room", { name, code }, (result) => {
-      if (result?.error) {
-        setError(result.error);
-        return;
-      }
+    socket.emit(
+      "join-room",
+      { name, code, avatar: selectedAvatar },
+      (result) => {
+        if (result?.error) {
+          setError(result.error);
+          return;
+        }
 
-      setRoom(result.room);
-    });
+        setRoom(result.room);
+      });
   }
 
 
@@ -331,9 +342,17 @@ function App() {
                         {index + 1}
                       </span>
 
-                      <span className="player-avatar">
-                        {player.name.charAt(0).toUpperCase()}
+
+                      <span
+                        className="player-avatar"
+                        style={{
+                          backgroundColor: getAvatarDetails(player.avatar).color,
+                        }}
+                        title={getAvatarDetails(player.avatar).name}
+                      >
+                        {getAvatarDetails(player.avatar).emoji}
                       </span>
+
 
                       <div className="game-player-info">
                         <strong>
@@ -415,6 +434,15 @@ function App() {
                                 ? "🥉"
                                 : index + 1}
                         </span>
+                        <span
+                          className="player-avatar"
+                          style={{
+                            backgroundColor: getAvatarDetails(player.avatar).color,
+                          }}
+                          title={getAvatarDetails(player.avatar).name}
+                        >
+                          {getAvatarDetails(player.avatar).emoji}
+                        </span>
 
                         <span className="final-player-name">
                           {player.name}
@@ -463,7 +491,7 @@ function App() {
               </div>
             ) : (
               <>
-                
+
 
                 <GameHeader
                   game={game}
@@ -641,9 +669,17 @@ function App() {
                     ? "correct-guesser"
                     : ""
               }>
-                <span className="player-avatar">
-                  {player.name.charAt(0).toUpperCase()}
+
+                <span
+                  className="player-avatar"
+                  style={{
+                    backgroundColor: getAvatarDetails(player.avatar).color,
+                  }}
+                  title={getAvatarDetails(player.avatar).name}
+                >
+                  {getAvatarDetails(player.avatar).emoji}
                 </span>
+
 
                 <span className="player-name">
                   {player.name}
@@ -707,6 +743,10 @@ function App() {
           <span className="status-dot" />
           Server: {connected ? "Connected" : "Connecting..."}
         </div>
+        <AvatarPicker
+          selectedAvatar={selectedAvatar}
+          onSelect={setSelectedAvatar}
+        />
 
         <form onSubmit={createRoom}>
           <label htmlFor="player-name">Your name</label>
@@ -719,6 +759,7 @@ function App() {
             maxLength={20}
             required
           />
+
 
           <button
             className="primary-button"
