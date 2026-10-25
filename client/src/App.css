@@ -2209,6 +2209,8 @@ input:focus {
   font-weight: 600;
 }
 
+
+
 @media (max-width: 380px) {
   .avatar-grid {
     gap: 6px;
@@ -2221,3 +2223,212 @@ input:focus {
   }
 }
 
+/* Tablets and smaller laptops */
+@media (max-width: 1100px) {
+  .game-layout {
+    grid-template-columns: 190px minmax(0, 1fr) 240px;
+    gap: 12px;
+  }
+
+  .game-sidebar,
+  .game-chat-sidebar {
+    min-width: 0;
+  }
+
+  .game-card {
+    padding: 12px;
+  }
+
+  .game-player-list li {
+    gap: 6px;
+  }
+
+  .game-player-info strong {
+    overflow-wrap: anywhere;
+  }
+
+  .drawing-canvas {
+    max-width: 100%;
+  }
+}
+
+/* Tablets */
+@media (max-width: 900px) {
+  .game-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .game-sidebar {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .game-main {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-width: 0;
+  }
+
+  .game-chat-sidebar {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .game-topbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .game-brand h1 {
+    font-size: 22px;
+  }
+
+  .drawing-toolbar {
+    gap: 8px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 600px) {
+  .page {
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px 14px;
+    box-sizing: border-box;
+  }
+
+  .avatar-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .game-page {
+    padding: 8px;
+  }
+
+  .game-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .game-brand h1 {
+    font-size: 19px;
+  }
+
+  .topbar-round,
+  .topbar-room {
+    font-size: 11px;
+  }
+
+  .exit-button {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  /* Stack the game sections with less spacing */
+  .game-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  /* Drawing area comes first */
+  .game-main {
+    order: 1;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Chat comes immediately after the drawing area */
+  .game-chat-sidebar {
+    order: 2;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Players list appears below chat */
+  .game-sidebar {
+    order: 3;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .game-card,
+  .game-results,
+  .chat-panel {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Remove excess vertical space around the game */
+  .game-main > *,
+  .game-chat-sidebar > *,
+  .game-sidebar > * {
+    margin-bottom: 0;
+  }
+
+  .game-player-list {
+    padding-left: 0;
+  }
+
+  .game-player-list li {
+    min-width: 0;
+  }
+
+  /* Drawing panel */
+  .drawing-panel {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    margin-bottom: 0;
+  }
+
+  .drawing-canvas {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+
+  /* Drawing toolbar */
+  .drawing-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .toolbar-tools,
+  .toolbar-actions {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .toolbar-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .toolbar-actions {
+    display: grid;
+  }
+}

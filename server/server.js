@@ -365,7 +365,7 @@ io.on("connection", (socket) => {
             code,
             hostId: socket.id,
             players: [
-                { id: socket.id, name, score: 0 , avatar}
+                { id: socket.id, name, score: 0, avatar }
             ],
             game: null
         };
@@ -425,7 +425,7 @@ io.on("connection", (socket) => {
             name,
             score: 0,
             avatar
-            
+
         });
 
         socket.join(code);
@@ -612,8 +612,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        console.log("Player disconnected:", socket.id);
-        leaveRoom(socket);
+        console.log("Player temporarily disconnected:", socket.id);
     });
 
 
