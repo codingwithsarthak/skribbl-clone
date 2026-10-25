@@ -180,72 +180,72 @@ function DrawingCanvas({ socket, roomCode, canDraw }) {
 
   return (
     <section className="drawing-panel">
-      
-<div className="drawing-toolbar">
-  <div className="toolbar-group toolbar-tools">
-    <label className="color-control">
-      <span>Color</span>
-      <input
-        type="color"
-        value={color}
-        disabled={!canDraw}
-        onChange={(event) => {
-          setColor(event.target.value);
-          setIsErasing(false);
-        }}
-        title="Choose brush color"
-      />
-    </label>
 
-    <label className="brush-control">
-      <span>Size</span>
-      <input
-        type="range"
-        min="2"
-        max="18"
-        value={brushSize}
-        disabled={!canDraw}
-        onChange={(event) =>
-          setBrushSize(Number(event.target.value))
-        }
-        title={`Brush size: ${brushSize}`}
-      />
-      <span className="brush-value">{brushSize}</span>
-    </label>
-  </div>
+      <div className="drawing-toolbar">
+        <div className="toolbar-group toolbar-tools">
+          <label className="color-control">
+            <span>Color</span>
+            <input
+              type="color"
+              value={color}
+              disabled={!canDraw}
+              onChange={(event) => {
+                setColor(event.target.value);
+                setIsErasing(false);
+              }}
+              title="Choose brush color"
+            />
+          </label>
 
-  <div className="toolbar-group toolbar-actions">
-    <button
-      type="button"
-      className="toolbar-button"
-      disabled={!canDraw}
-      onClick={undoDrawing}
-      title="Undo last stroke"
-    >
-      ↶ Undo
-    </button>
+          <label className="brush-control">
+            <span>Size</span>
+            <input
+              type="range"
+              min="2"
+              max="18"
+              value={brushSize}
+              disabled={!canDraw}
+              onChange={(event) =>
+                setBrushSize(Number(event.target.value))
+              }
+              title={`Brush size: ${brushSize}`}
+            />
+            <span className="brush-value">{brushSize}</span>
+          </label>
+        </div>
 
-    <button
-      type="button"
-      className={`toolbar-button ${isErasing ? "tool-active" : ""}`}
-      disabled={!canDraw}
-      onClick={() => setIsErasing((previous) => !previous)}
-      title="Switch between brush and eraser"
-    >
-      {isErasing ? "🖌️ Brush" : "🧽 Eraser"}
-    </button>
+        <div className="toolbar-group toolbar-actions">
+          <button
+            type="button"
+            className="toolbar-button"
+            disabled={!canDraw}
+            onClick={undoDrawing}
+            title="Undo last stroke"
+          >
+            ↶ Undo
+          </button>
 
-    <button
-      type="button"
-      className="toolbar-button clear-button"
-      disabled={!canDraw}
-      onClick={clearCanvas}
-      title="Clear the entire canvas"
-    >
-      Clear
-    </button>
-  </div>
-</div>
+          <button
+            type="button"
+            className={`toolbar-button ${isErasing ? "tool-active" : ""}`}
+            disabled={!canDraw}
+            onClick={() => setIsErasing((previous) => !previous)}
+            title="Switch between brush and eraser"
+          >
+            {isErasing ? "🖌️ Brush" : "🧽 Eraser"}
+          </button>
+
+          <button
+            type="button"
+            className="toolbar-button clear-button"
+            disabled={!canDraw}
+            onClick={clearCanvas}
+            title="Clear the entire canvas"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
 
 
       {!canDraw && (
@@ -257,18 +257,21 @@ function DrawingCanvas({ socket, roomCode, canDraw }) {
         <span>Word hint:</span>
         <strong>{wordHint || "Waiting for hint..."}</strong>
       </div>
-      <canvas
-        ref={canvasRef}
-        width={800}
-        height={450}
-        className={`drawing-canvas ${canDraw ? "draw-enabled" : ""
-          }`}
-        onPointerDown={startDrawing}
-        onPointerMove={draw}
-        onPointerUp={stopDrawing}
-        onPointerCancel={stopDrawing}
-        onPointerLeave={stopDrawing}
-      />
+      
+      <div className="canvas-container">
+        <canvas
+          ref={canvasRef}
+          width={800}
+          height={450}
+          className={`drawing-canvas ${canDraw ? "draw-enabled" : ""}`}
+          onPointerDown={startDrawing}
+          onPointerMove={draw}
+          onPointerUp={stopDrawing}
+          onPointerCancel={stopDrawing}
+          onPointerLeave={stopDrawing}
+        />
+      </div>
+
     </section>
   );
 }
